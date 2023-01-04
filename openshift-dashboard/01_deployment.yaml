@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oc-console
+  namespace: kube-system
+  labels:
+    app: oc-console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oc-console
+  template:
+    metadata:
+      labels:
+        app: oc-console
+    spec:
+      containers:
+        - name: oc-console
+          image: quay.io/openshift/origin-console:latest
+          env:
+            - name: BRIDGE_USER_AUTH
+              value: disabled # authentication required (must be one of: oidc, openshift, disabled)
+            - name: BRIDGE_K8S_MODE
+              value: off-cluster
+            - name: BRIDGE_K8S_MODE_OFF_CLUSTER_ENDPOINT
+              value: https://kubernetes.default #master api
+            - name: BRIDGE_K8S_MODE_OFF_CLUSTER_SKIP_VERIFY_TLS
+              value: "true" # no tls enabled
+            - name: BRIDGE_K8S_AUTH
+              value: bearer-token
+            - name: BRIDGE_K8S_AUTH_BEARER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: console-token-rtzd4
+                  key: token

@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: oc-console-svc
+  namespace: kube-system
+spec:
+  selector:
+    app: oc-console
+  type: ClusterIP 
+  ports:
+    - name: http
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
